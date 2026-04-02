@@ -140,6 +140,7 @@
     document.querySelectorAll('input[type="range"]').forEach(updateSliderFill);
   }
 
+  // render loop — runs every frame while camera is active
   function render() {
     const video = el.video;
     if (!state.cameraActive || video.readyState < 2) {
@@ -295,6 +296,7 @@
       el.canvas.width  = rw;
       el.canvas.height = rh;
 
+      // merge canvas video with mic audio for recording
       const canvasVideo = el.canvas.captureStream(state.fps);
       const audioTracks = NC.Camera.getStream().getAudioTracks();
       if (audioTracks.length > 0) {
@@ -761,6 +763,7 @@
     return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
   }
 
+  // wire up all UI events
   function wireEvents() {
     el.startCameraBtn.addEventListener('click', () => {
       if (state.cameraActive) stopCamera(); else startCamera();

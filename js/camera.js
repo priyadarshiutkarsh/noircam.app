@@ -28,7 +28,7 @@ NC.Camera = (function () {
       _stream = await navigator.mediaDevices.getUserMedia({ video: true });
     }
 
-    // Ask for mic separately so a denial doesn't block the camera
+    // mic is separate so denying it doesn't kill the camera
     try {
       const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
       audioStream.getAudioTracks().forEach(t => _stream.addTrack(t));
