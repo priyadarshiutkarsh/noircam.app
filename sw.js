@@ -2,7 +2,7 @@
  * sw.js — NoirCam Service Worker (PWA support)
  * Caches app shell for offline use.
  */
-const CACHE = 'noircam-v1';
+const CACHE = 'noircam-v2';
 const SHELL = [
   './',
   './index.html',
@@ -10,7 +10,8 @@ const SHELL = [
   './js/filters.js',
   './js/camera.js',
   './js/recorder.js',
-  './js/app.js'
+  './js/app.js',
+  './js/intro.js'
 ];
 
 self.addEventListener('install', e => {
