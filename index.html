@@ -190,6 +190,12 @@
             <line x1="3" y1="15" x2="21" y2="15"/>
           </svg>
         </button>
+        <button id="collageBtn" class="tool-chip" title="Collage mode" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/>
+            <rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/>
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -508,6 +514,33 @@
 <!-- ╔══════════════════════════════════════════════════════╗ -->
 <!-- ║  TOAST                                               ║ -->
 <!-- ╚══════════════════════════════════════════════════════╝ -->
+<div id="collageBackdrop" class="overlay-backdrop hidden"></div>
+<div id="collageModal" class="modal hidden" role="dialog" aria-label="Collage">
+  <div class="modal-head">
+    <span class="modal-title">Collage Layout</span>
+    <button id="closeCollage" class="close-btn">&times;</button>
+  </div>
+  <div class="collage-picker">
+    <button class="collage-layout-btn" data-layout="2x1">
+      <div class="cl-preview cl-2x1"><span></span><span></span></div>
+      <span>2 × 1</span>
+    </button>
+    <button class="collage-layout-btn" data-layout="1x2">
+      <div class="cl-preview cl-1x2"><span></span><span></span></div>
+      <span>1 × 2</span>
+    </button>
+    <button class="collage-layout-btn" data-layout="2x2">
+      <div class="cl-preview cl-2x2"><span></span><span></span><span></span><span></span></div>
+      <span>2 × 2</span>
+    </button>
+    <button class="collage-layout-btn" data-layout="3x1">
+      <div class="cl-preview cl-3x1"><span></span><span></span><span></span></div>
+      <span>3 × 1</span>
+    </button>
+  </div>
+  <p class="collage-hint">Camera will auto-capture photos with a 2s gap between each slot.</p>
+</div>
+
 <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 </div>
 

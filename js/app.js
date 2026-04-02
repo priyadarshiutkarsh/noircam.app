@@ -114,6 +114,10 @@
     lightboxDownload:  $('lightboxDownload'),
     lightboxDelete:    $('lightboxDelete'),
     closeLightbox:     $('closeLightbox'),
+    collageBtn:        $('collageBtn'),
+    collageModal:      $('collageModal'),
+    collageBackdrop:   $('collageBackdrop'),
+    closeCollage:      $('closeCollage'),
     shortcutsBtn:      $('shortcutsBtn'),
     shortcutsModal:    $('shortcutsModal'),
     shortcutsBackdrop: $('shortcutsBackdrop'),
@@ -265,6 +269,90 @@
     document.body.style.overflow = '';
   }
 
+  function openCollageModal() {
+    el.collageModal.classList.remove('hidden');
+    el.collageBackdrop.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCollageModal() {
+    el.collageModal.classList.add('hidden');
+    el.collageBackdrop.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  // capture N frames and stitch into a single collage image
+  async function doCollage(layout) {
+    const LAYOUT_MAP = { '2x1': 2, '1x2': 2, '2x2': 4, '3x1': 3 };
+    const count = LAYOUT_MAP[layout] || 2;
+    closeCollageModal();
+
+    const [rw, rh] = RESMAP[state.resolution] || RESMAP[720];
+    const shots = [];
+
+    for (let i = 0; i < count; i++) {
+      if (i > 0) {
+        showToast(`Photo ${i + 1} of ${count} in 2s…`);
+        await sleep(2000);
+      }
+      flashEffect();
+      const off = document.createElement('canvas');
+      off.width  = rw;
+      off.height = rh;
+      const octx = off.getContext('2d', { willReadFrequently: true });
+      const video = NC.Camera.getVideoEl();
+      octx.save();
+      if (state.mirror) { octx.translate(rw, 0); octx.scale(-1, 1); }
+      if (state.zoom > 1) {
+        octx.translate(rw/2, rh/2);
+        octx.scale(state.zoom, state.zoom);
+        octx.translate(-rw/2, -rh/2);
+      }
+      octx.filter = NC.Filters.buildCssFilter(state.currentFilter, state.intensity, state.adj);
+      octx.drawImage(video, 0, 0, rw, rh);
+      octx.restore();
+      NC.Filters.applyPostProcess(octx, rw, rh, state.currentFilter, state.intensity, state.adj);
+      shots.push(off);
+    }
+
+    // stitch shots onto output canvas
+    const out = document.createElement('canvas');
+    if (layout === '2x1') {
+      out.width  = rw;
+      out.height = rh;
+      const octx = out.getContext('2d');
+      octx.drawImage(shots[0], 0, 0, rw/2, rh);
+      octx.drawImage(shots[1], rw/2, 0, rw/2, rh);
+    } else if (layout === '1x2') {
+      out.width  = rw;
+      out.height = rh;
+      const octx = out.getContext('2d');
+      octx.drawImage(shots[0], 0, 0, rw, rh/2);
+      octx.drawImage(shots[1], 0, rh/2, rw, rh/2);
+    } else if (layout === '2x2') {
+      out.width  = rw;
+      out.height = rh;
+      const octx = out.getContext('2d');
+      octx.drawImage(shots[0], 0,    0,    rw/2, rh/2);
+      octx.drawImage(shots[1], rw/2, 0,    rw/2, rh/2);
+      octx.drawImage(shots[2], 0,    rh/2, rw/2, rh/2);
+      octx.drawImage(shots[3], rw/2, rh/2, rw/2, rh/2);
+    } else if (layout === '3x1') {
+      out.width  = rw;
+      out.height = rh;
+      const octx = out.getContext('2d');
+      octx.drawImage(shots[0], 0,       0, rw/3, rh);
+      octx.drawImage(shots[1], rw/3,    0, rw/3, rh);
+      octx.drawImage(shots[2], rw*2/3,  0, rw/3, rh);
+    }
+
+    const mime   = state.format === 'png' ? 'image/png' : 'image/jpeg';
+    const qual   = state.format === 'png' ? undefined : state.jpegQuality;
+    const dataUrl = out.toDataURL(mime, qual);
+    addToGallery({ type: 'photo', dataUrl, ts: Date.now() });
+    showToast('Collage saved!');
+  }
+
   function updateStatsHUD() {
     if (!state.cameraActive) return;
     const filterName = document.querySelector(`.filter-btn[data-filter="${state.currentFilter}"] span`)?.textContent || state.currentFilter;
@@ -370,7 +458,7 @@
   }
 
   function setControlsEnabled(enabled) {
-    [el.captureBtn, el.burstBtn, el.recordBtn, el.mirrorBtn, el.beforeAfterBtn, el.gridBtn].forEach(b => {
+    [el.captureBtn, el.burstBtn, el.recordBtn, el.mirrorBtn, el.beforeAfterBtn, el.gridBtn, el.collageBtn].forEach(b => {
       if (b) b.disabled = !enabled;
     });
     if (!NC.Recorder.isSupported()) el.recordBtn.disabled = true;
@@ -789,6 +877,13 @@
 
     el.gridBtn.addEventListener('click', toggleGrid);
 
+    el.collageBtn.addEventListener('click', openCollageModal);
+    el.closeCollage.addEventListener('click', closeCollageModal);
+    el.collageBackdrop.addEventListener('click', closeCollageModal);
+    document.querySelectorAll('.collage-layout-btn').forEach(btn => {
+      btn.addEventListener('click', () => doCollage(btn.dataset.layout));
+    });
+
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });
@@ -911,6 +1006,7 @@
       if (e.key === 'Escape') {
         if (!el.lightbox.classList.contains('hidden')) { closeLightbox(); return; }
         if (!el.shortcutsModal.classList.contains('hidden')) { closeShortcutsModal(); return; }
+        if (!el.collageModal.classList.contains('hidden')) { closeCollageModal(); return; }
       }
       if (e.key === '?') { openShortcutsModal(); return; }
       if (e.target.matches('input, select, textarea')) return;

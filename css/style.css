@@ -1313,160 +1313,160 @@ kbd {
 }
 [data-theme="light"] .toast { background: rgba(0,0,0,0.85); color:#fff; }
 
+/* Collage modal */
+.collage-picker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 14px 16px;
+}
+.collage-layout-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 6px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 600;
+  transition: all var(--t);
+}
+.collage-layout-btn:hover { border-color: #e8ff57; color: var(--text); }
+.cl-preview {
+  width: 48px;
+  height: 36px;
+  display: grid;
+  gap: 2px;
+}
+.cl-preview span {
+  background: var(--surface-3);
+  border-radius: 2px;
+  display: block;
+}
+.cl-2x1 { grid-template-columns: 1fr 1fr; }
+.cl-1x2 { grid-template-rows: 1fr 1fr; }
+.cl-2x2 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.cl-3x1 { grid-template-columns: 1fr 1fr 1fr; }
+.collage-hint {
+  font-size: 11px;
+  color: var(--text-3);
+  text-align: center;
+  padding: 0 16px 14px;
+  line-height: 1.5;
+}
+
 /* Mobile */
 @media (max-width: 700px) {
 
-  .header {
-    padding: 0 12px;
-  }
-  .logo span {
-    font-size: 14px;
-  }
+  .header { height: 44px; padding: 0 12px; }
+  .logo-mark { width: 22px; height: 22px; border-radius: 6px; }
+  .logo span { font-size: 13px; }
+  .hdr-btn { width: 28px; height: 28px; }
 
-  .app-layout {
-    flex-direction: column;
-    height: auto;
-    overflow: visible;
-  }
+  .app-layout { flex-direction: column; }
 
-  /* Preview fills most of the screen above the fold */
+  /* preview gets a proper tall slice */
   .preview-section {
-    height: clamp(240px, 58vw, 420px);
+    height: 46dvh;
+    min-height: 240px;
     flex-shrink: 0;
   }
 
-  /* Aspect chips smaller on mobile */
-  .aspect-chip {
-    padding: 4px 9px;
-    font-size: 11px;
-  }
+  /* hide zoom bar — saves ~38px */
+  .preview-footer { display: none; }
 
-  /* Zoom bar more compact */
-  .preview-footer {
-    padding: 6px 10px;
-  }
+  /* aspect chips tiny */
+  .aspect-chip { padding: 3px 7px; font-size: 10px; }
 
-  /* Sidebar becomes a bottom panel */
+  /* sidebar is the bottom panel */
   .sidebar {
     width: 100%;
     border-left: none;
     border-top: 1px solid var(--border);
-    /* give it a fixed height so it doesn't push content off screen */
-    max-height: 60dvh;
+    overflow: visible;
   }
 
-  /* Camera row: stack start btn above tools on very small screens */
-  .cam-row {
-    padding: 8px 10px 6px;
-    gap: 6px;
-  }
-  .start-btn {
-    height: 34px;
-    font-size: 12px;
-  }
-  .tool-chip {
-    width: 32px;
-    height: 34px;
-  }
+  /* camera row compact */
+  .cam-row { padding: 6px 8px 4px; gap: 5px; }
+  .start-btn { height: 32px; font-size: 12px; gap: 5px; }
+  .tool-chip { width: 30px; height: 32px; }
+  .tool-chip svg { width: 14px; height: 14px; }
 
-  /* Tab bar: hide label text, show only icons */
-  .tab-btn {
-    padding: 8px 4px;
-    gap: 0;
-    font-size: 0; /* hide text */
-  }
-  .tab-btn svg {
-    width: 16px;
-    height: 16px;
-  }
+  /* tabs: icons only */
+  .tab-bar { background: var(--bg); }
+  .tab-btn { padding: 7px 4px; font-size: 0; gap: 0; }
+  .tab-btn svg { width: 15px; height: 15px; }
 
-  /* Tab content scrolls nicely */
-  .tab-content {
-    max-height: none;
-    flex: 1;
-    overflow-y: auto;
-  }
+  /* tab content: small fixed height, scrollable */
+  .tab-content { max-height: 32dvh; overflow-y: auto; }
+  .tab-panel { padding: 6px 8px; gap: 5px; }
 
-  /* Filters: 5 columns on mobile so more filters are visible */
+  /* hide panel labels — they waste vertical space */
+  .panel-head { margin-bottom: 0; }
+  .panel-label { display: none; }
+
+  /* FILTER STRIP: horizontal scroll — biggest space saver */
   .filter-strip {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: visible;
+    gap: 6px;
+    padding: 2px 2px 6px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
   }
+  .filter-strip::-webkit-scrollbar { display: none; }
   .filter-btn {
-    padding: 5px 2px;
-    border-radius: 7px;
+    flex-shrink: 0;
+    width: 62px;
+    padding: 4px 4px;
+    border-radius: 8px;
+    gap: 3px;
   }
-  .filter-btn span {
-    font-size: 9px;
-  }
+  .filter-btn span { font-size: 9px; }
+  .fp { border-radius: 6px; }
 
-  /* Adjustments: keep single column, slightly more compact */
-  .adj-item {
-    padding: 8px 10px;
-    gap: 4px;
-  }
+  /* intensity row */
+  .intensity-row { padding: 2px 0; }
+  .intensity-row label { font-size: 10px; }
 
-  /* Capture dock: tighter on mobile */
-  .capture-dock {
-    padding: 6px 10px 12px;
-    gap: 6px;
-  }
-  .timer-chip {
-    padding: 3px 8px;
-    font-size: 10px;
-  }
-  .flank-btn {
-    width: 52px;
-    height: 52px;
-    border-radius: 10px;
-    font-size: 8px;
-  }
-  .capture-btn {
-    width: 58px;
-    height: 58px;
-  }
+  /* adjustments: compact cards */
+  .adj-item { padding: 6px 8px; gap: 3px; }
+  .adj-head label { font-size: 11px; }
+  .mono-val { font-size: 10px; }
 
-  /* Gallery: 3 columns on mobile */
-  .gallery-section {
-    padding: 16px 12px 24px;
-  }
-  .gallery-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-  }
+  /* export selects */
+  .export-row select { font-size: 11px; padding: 4px 6px; }
+  .export-row label { font-size: 11px; }
 
-  /* Lightbox fullscreen on mobile */
-  .lightbox {
-    max-width: 96vw;
-  }
+  /* capture dock */
+  .capture-dock { padding: 5px 10px 14px; gap: 5px; }
+  .dock-label { font-size: 9px; min-width: 28px; }
+  .timer-chip { padding: 2px 8px; font-size: 10px; }
+  .flank-btn { width: 50px; height: 50px; font-size: 8px; gap: 2px; border-radius: 10px; }
+  .flank-btn svg { width: 16px; height: 16px; }
+  .capture-btn { width: 56px; height: 56px; }
 
-  /* Modal full width on mobile */
-  .modal {
-    width: 92vw;
-  }
+  /* gallery */
+  .gallery-section { padding: 14px 10px 20px; }
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 5px; }
+
+  .lightbox { max-width: 96vw; }
+  .modal { width: 94vw; }
+  .collage-picker { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 12px; }
 }
 
-/* Landscape mobile */
+/* Landscape phone */
 @media (max-width: 900px) and (orientation: landscape) {
-  .app-layout {
-    flex-direction: row;
-  }
-  .preview-section {
-    height: auto;
-    flex: 1;
-  }
-  .sidebar {
-    width: 260px;
-    max-height: none;
-    border-left: 1px solid var(--border);
-    border-top: none;
-  }
-  .tab-btn {
-    font-size: 9px;
-    gap: 2px;
-  }
-  .tab-btn svg {
-    width: 13px;
-    height: 13px;
-  }
+  .app-layout { flex-direction: row; }
+  .preview-section { height: auto; flex: 1; }
+  .sidebar { width: 240px; max-height: none; border-left: 1px solid var(--border); border-top: none; }
+  .tab-btn { font-size: 9px; gap: 2px; }
+  .tab-btn svg { width: 13px; height: 13px; }
+  .filter-strip { display: grid; grid-template-columns: repeat(4, 1fr); overflow: visible; }
+  .preview-footer { display: flex; }
 }
