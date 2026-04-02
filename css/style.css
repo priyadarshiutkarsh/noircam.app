@@ -82,6 +82,8 @@ select { cursor:pointer; }
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  overflow: hidden;
+  cursor: pointer;
   transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 #splash.hide {
@@ -127,7 +129,7 @@ select { cursor:pointer; }
   letter-spacing: 0.4px;
 }
 .splash-bar {
-  width: 120px;
+  width: 140px;
   height: 2px;
   background: rgba(255,255,255,0.08);
   border-radius: 99px;
@@ -139,7 +141,15 @@ select { cursor:pointer; }
   width: 0%;
   background: #e8ff57;
   border-radius: 99px;
-  transition: width 0.05s linear;
+}
+.splash-hint {
+  font-size: 11px;
+  color: rgba(255,255,255,0.28);
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  user-select: none;
 }
 
 /* App fades in after splash */
@@ -157,9 +167,10 @@ select { cursor:pointer; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 14px;
+  padding: 0 16px;
   background: var(--bg-2);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.03);
   flex-shrink: 0;
 }
 .logo {
@@ -625,11 +636,12 @@ select { cursor:pointer; }
   transition: all var(--t);
   overflow: hidden;
 }
-.filter-btn:hover { background: var(--surface-2); color:var(--text); }
+.filter-btn:hover { background: var(--surface-2); color:var(--text); transform: scale(1.03); }
 .filter-btn.active {
-  border-color: var(--accent);
+  border-color: #e8ff57;
   color: var(--text);
   background: var(--surface-2);
+  box-shadow: 0 0 0 1px rgba(232,255,87,0.15);
 }
 .filter-btn span {
   font-size: 10px;
@@ -1314,31 +1326,160 @@ kbd {
 }
 [data-theme="light"] .toast { background: rgba(0,0,0,0.85); color:#fff; }
 
-/* ─────────────────────────────────────────────────────────── */
-/* RESPONSIVE (mobile stacking)                                 */
-/* ─────────────────────────────────────────────────────────── */
+/* Mobile */
 @media (max-width: 700px) {
+
+  .header {
+    padding: 0 12px;
+  }
+  .logo span {
+    font-size: 14px;
+  }
+
   .app-layout {
     flex-direction: column;
     height: auto;
     overflow: visible;
   }
+
+  /* Preview fills most of the screen above the fold */
   .preview-section {
-    height: 56vw;
-    min-height: 280px;
+    height: clamp(240px, 58vw, 420px);
     flex-shrink: 0;
   }
+
+  /* Aspect chips smaller on mobile */
+  .aspect-chip {
+    padding: 4px 9px;
+    font-size: 11px;
+  }
+
+  /* Zoom bar more compact */
+  .preview-footer {
+    padding: 6px 10px;
+  }
+
+  /* Sidebar becomes a bottom panel */
   .sidebar {
     width: 100%;
-    height: auto;
-    max-height: 70dvh;
     border-left: none;
     border-top: 1px solid var(--border);
+    /* give it a fixed height so it doesn't push content off screen */
+    max-height: 60dvh;
   }
+
+  /* Camera row: stack start btn above tools on very small screens */
+  .cam-row {
+    padding: 8px 10px 6px;
+    gap: 6px;
+  }
+  .start-btn {
+    height: 34px;
+    font-size: 12px;
+  }
+  .tool-chip {
+    width: 32px;
+    height: 34px;
+  }
+
+  /* Tab bar: hide label text, show only icons */
+  .tab-btn {
+    padding: 8px 4px;
+    gap: 0;
+    font-size: 0; /* hide text */
+  }
+  .tab-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Tab content scrolls nicely */
   .tab-content {
-    max-height: 40dvh;
+    max-height: none;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  /* Filters: 5 columns on mobile so more filters are visible */
+  .filter-strip {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+  }
+  .filter-btn {
+    padding: 5px 2px;
+    border-radius: 7px;
+  }
+  .filter-btn span {
+    font-size: 9px;
+  }
+
+  /* Adjustments: keep single column, slightly more compact */
+  .adj-item {
+    padding: 8px 10px;
+    gap: 4px;
+  }
+
+  /* Capture dock: tighter on mobile */
+  .capture-dock {
+    padding: 6px 10px 12px;
+    gap: 6px;
+  }
+  .timer-chip {
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+  .flank-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    font-size: 8px;
+  }
+  .capture-btn {
+    width: 58px;
+    height: 58px;
+  }
+
+  /* Gallery: 3 columns on mobile */
+  .gallery-section {
+    padding: 16px 12px 24px;
   }
   .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  /* Lightbox fullscreen on mobile */
+  .lightbox {
+    max-width: 96vw;
+  }
+
+  /* Modal full width on mobile */
+  .modal {
+    width: 92vw;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 900px) and (orientation: landscape) {
+  .app-layout {
+    flex-direction: row;
+  }
+  .preview-section {
+    height: auto;
+    flex: 1;
+  }
+  .sidebar {
+    width: 260px;
+    max-height: none;
+    border-left: 1px solid var(--border);
+    border-top: none;
+  }
+  .tab-btn {
+    font-size: 9px;
+    gap: 2px;
+  }
+  .tab-btn svg {
+    width: 13px;
+    height: 13px;
   }
 }
